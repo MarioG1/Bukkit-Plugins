@@ -74,6 +74,7 @@ public class MCDocsListener implements Listener {
 	private String onlinePlayersFormat = "%prefix%name";
 	private String newsFile = "news.txt";
 	private int newsLines = 1;
+	private int linesPerPage = 9;
 	private boolean motdEnabled = true;
 	private boolean commandLogEnabled = true;
 	private boolean errorLogEnabled = true;
@@ -185,6 +186,9 @@ public class MCDocsListener implements Listener {
 				stream.println("#How many lines to show when using %news.");
 				stream.println("news-lines: " + newsLines);
 				stream.println();
+				stream.println("#How many lines should be shown per page?");
+				stream.println("lines-per-page: " + linesPerPage);
+				stream.println();
 				stream.println("#How long, in minutes, do you want online files to be cached locally? 0 = disable");
 				stream.println("cache-time: " + cacheTime);
 				stream.println();
@@ -223,6 +227,7 @@ public class MCDocsListener implements Listener {
 		errorLogEnabled = config.getBoolean("error-log-enabled", errorLogEnabled);
 		newsFile = config.getString("news-file", newsFile);
 		newsLines = config.getInt("news-lines", newsLines);
+		linesPerPage = config.getInt("lines-per-page", linesPerPage);
 		cacheTime = config.getInt("cache-time", cacheTime);
 		playerBroadcastMessageEnabled = config.getBoolean("broadcast-enabled", playerBroadcastMessageEnabled);
 		
@@ -540,11 +545,11 @@ public class MCDocsListener implements Listener {
         int size = fixedLines.size();
         int pages;
         
-        if(size % 9 == 0){
-        	pages = size / 9;
+        if(size % linesPerPage == 0){
+        	pages = size / linesPerPage;
         }
         else{
-        	pages = size / 9 + 1;
+        	pages = size / linesPerPage + 1;
         }
         
         //This here grabs the specified 9 lines, or if it's the last page, the left over amount of lines.
@@ -567,8 +572,8 @@ public class MCDocsListener implements Listener {
             player.sendMessage(header);
         }
         //Some math, magic, and wizards.
-        int highNum = (page * 9);
-        int lowNum = (page - 1) * 9;
+        int highNum = (page * linesPerPage);
+        int lowNum = (page - 1) * linesPerPage;
         for (int number = lowNum; number < highNum; number++){
         	if(number >= size){
         		if(!motd && pages != 1){
