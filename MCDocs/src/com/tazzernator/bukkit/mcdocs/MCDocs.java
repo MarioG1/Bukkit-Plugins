@@ -94,7 +94,7 @@ public class MCDocs extends JavaPlugin {
 		catch(Exception e){
 			log.info("[MCDocs] WARNING: No Economy plugin found..");
 		}
-	    
+		
 				
 		config = this.getConfig();
 		this.playerListener.setupConfig(config);
@@ -103,65 +103,65 @@ public class MCDocs extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(this.playerListener, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
-        log.info("[" + pdfFile.getName() + "] (Tazzernator/Andrew Tajsic) - v" + pdfFile.getVersion() + " loaded.");
+		log.info("[" + pdfFile.getName() + "] (Tazzernator/Andrew Tajsic) - v" + pdfFile.getVersion() + " loaded.");
 	}
 	
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    	PluginDescriptionFile pdfFile = this.getDescription();
-    	Player player = null;
-    	if (sender instanceof Player) {
-    		player = (Player) sender;
-    	}
-     
-    	if (cmd.getName().equalsIgnoreCase("mcdocs")){
-    		try{
-    			if(args[0].equalsIgnoreCase("-reload")){
-		    		if(player == null){
-		    			this.playerListener.loadConfig();
-		    			this.playerListener.logit("MCDocs has been reloaded through console");
-		    			return true;
-		    		}
-		    		else if(MCDocs.permission.has(player, "mcdocs.reload") || MCDocs.permission.has(player, "mcdocs.*") || player.isOp()){
-		    			this.playerListener.loadConfig();
-		    			player.sendMessage("MCDocs has been reloaded.");
-		    			this.playerListener.logit("Reloaded by " + player.getName());
-		    			return true;
-		    		}
-		    		return true;
-    			}
-    		}
-    		catch(Exception e){
-    			sender.sendMessage("MCDocs version " + pdfFile.getVersion() + " by (Tazzernator/Andrew Tajsic)");
-    		}
-    	}
-    	return false;
-    }
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		PluginDescriptionFile pdfFile = this.getDescription();
+		Player player = null;
+		if (sender instanceof Player) {
+			player = (Player) sender;
+		}
+	 
+		if (cmd.getName().equalsIgnoreCase("mcdocs")){
+			try{
+				if(args[0].equalsIgnoreCase("-reload")){
+					if(player == null){
+						this.playerListener.loadConfig();
+						this.playerListener.logit("MCDocs has been reloaded through console");
+						return true;
+					}
+					else if(MCDocs.permission.has(player, "mcdocs.reload") || MCDocs.permission.has(player, "mcdocs.*") || player.isOp()){
+						this.playerListener.loadConfig();
+						player.sendMessage("MCDocs has been reloaded.");
+						this.playerListener.logit("Reloaded by " + player.getName());
+						return true;
+					}
+					return true;
+				}
+			}
+			catch(Exception e){
+				sender.sendMessage("MCDocs version " + pdfFile.getVersion() + " by (Tazzernator/Andrew Tajsic)");
+			}
+		}
+		return false;
+	}
 
 
 	
 	private Boolean setupPermissions()
 	{
 		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(Permission.class);
-	    if (permissionProvider != null) {
-	      permission = (Permission)permissionProvider.getProvider();
-	    }
-	    if (permission != null) return Boolean.valueOf(true); return Boolean.valueOf(false);
+		if (permissionProvider != null) {
+		  permission = (Permission)permissionProvider.getProvider();
+		}
+		if (permission != null) return Boolean.valueOf(true); return Boolean.valueOf(false);
 	}
 	
 	private Boolean setupChat()
-    {
-        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(Chat.class);
-        if (chatProvider != null) {
-            chat = chatProvider.getProvider();
-        }
+	{
+		RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(Chat.class);
+		if (chatProvider != null) {
+			chat = chatProvider.getProvider();
+		}
 
-        return (chat != null);
-    }
+		return (chat != null);
+	}
 
 	private boolean setupEconomy() {
-	    RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-	    economy = (Economy)economyProvider.getProvider();
-	    return economy != null;
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+		economy = (Economy)economyProvider.getProvider();
+		return economy != null;
 	}
 	
 }
