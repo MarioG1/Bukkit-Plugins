@@ -53,6 +53,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import uk.org.whoami.geoip.GeoIPLookup;
 import uk.org.whoami.geoip.GeoIPTools;
 
+
 //Listener Class
 public class MCDocsListener implements Listener {
 		
@@ -186,7 +187,7 @@ public class MCDocsListener implements Listener {
 				stream.println("#How many lines to show when using %news.");
 				stream.println("news-lines: " + newsLines);
 				stream.println();
-				stream.println("#How many lines should be shown per page?");
+				stream.println("#How many lines should be shown per page? 0 = unlimited");
 				stream.println("lines-per-page: " + linesPerPage);
 				stream.println();
 				stream.println("#How long, in minutes, do you want online files to be cached locally? 0 = disable");
@@ -545,7 +546,11 @@ public class MCDocsListener implements Listener {
 		int size = fixedLines.size();
 		int pages;
 		
-		if(size % linesPerPage == 0){
+		if(linesPerPage == 0){
+			//just skipping the header.
+			pages = 1;
+		}
+		else if(size % linesPerPage == 0){
 			pages = size / linesPerPage;
 		}
 		else{
@@ -572,18 +577,25 @@ public class MCDocsListener implements Listener {
 			player.sendMessage(header);
 		}
 		//Some math, magic, and wizards.
-		int highNum = (page * linesPerPage);
-		int lowNum = (page - 1) * linesPerPage;
-		for (int number = lowNum; number < highNum; number++){
-			if(number >= size){
-				if(!motd && pages != 1){
-					player.sendMessage(" ");
+		if(linesPerPage == 0){
+			for(String line : fixedLines){
+				player.sendMessage(line);
+			}
+		}
+		else{
+			int highNum = (page * linesPerPage);
+			int lowNum = (page - 1) * linesPerPage;
+			for (int number = lowNum; number < highNum; number++){
+				if(number >= size){
+					if(!motd && pages != 1){
+						player.sendMessage(" ");
+					}
 				}
+				else{
+					player.sendMessage(fixedLines.get(number));	 
+				}
+					   	
 			}
-			else{
-				player.sendMessage(fixedLines.get(number));	 
-			}
-				   	
 		}
 	}
 	
@@ -670,7 +682,9 @@ public class MCDocsListener implements Listener {
 					catch(Exception ex){
 						onlineLines.add(" ");
 					}
-				}
+				}	
+				scanner.close();
+				dis.close();
 				
 				//Add our new file to the cache
 				file = new MCDocsOnlineFiles(nowTime, url);
@@ -910,14 +924,14 @@ public class MCDocsListener implements Listener {
 		String[] Colours = { 	"&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7",
 								"&8", "&9", "&a", "&b", "&c", "&d", "&e", "&f",
 								"[color=black]", "[color=darkblue]", "[color=darkgreen]", "[color=darkaqua]", "[color=darkred]", "[color=darkpurple]", "[color=gold]", "[color=gray]",
-								"[color=darkgray]", "[color=blue]", "[color=green]", "[color=aqua]", "[color=red]", "[color=lightpurple]", "[color=yellow]", "[color=white]", "[/color]",
+								"[color=darkgray]", "[color=blue]", "[color=green]", "[color=aqua]", "[color=red]", "[color=lightpurple]", "[color=yellow]", "[color=white]", "[color=magic]",  "[/color]",
 								"[b]", "[s]", "[u]", "[i]",
 								"[/b]", "[/s]", "[/u]", "[/i]",
 							  };
 		ChatColor[] cCode = {	ChatColor.BLACK, ChatColor.DARK_BLUE, ChatColor.DARK_GREEN, ChatColor.DARK_AQUA, ChatColor.DARK_RED, ChatColor.DARK_PURPLE, ChatColor.GOLD, ChatColor.GRAY,
 								ChatColor.DARK_GRAY, ChatColor.BLUE, ChatColor.GREEN, ChatColor.AQUA, ChatColor.RED, ChatColor.LIGHT_PURPLE, ChatColor.YELLOW, ChatColor.WHITE,
 								ChatColor.BLACK, ChatColor.DARK_BLUE, ChatColor.DARK_GREEN, ChatColor.DARK_AQUA, ChatColor.DARK_RED, ChatColor.DARK_PURPLE, ChatColor.GOLD, ChatColor.GRAY,
-								ChatColor.DARK_GRAY, ChatColor.BLUE, ChatColor.GREEN, ChatColor.AQUA, ChatColor.RED, ChatColor.LIGHT_PURPLE, ChatColor.YELLOW, ChatColor.WHITE, ChatColor.WHITE,
+								ChatColor.DARK_GRAY, ChatColor.BLUE, ChatColor.GREEN, ChatColor.AQUA, ChatColor.RED, ChatColor.LIGHT_PURPLE, ChatColor.YELLOW, ChatColor.WHITE, ChatColor.MAGIC, ChatColor.WHITE,
 								ChatColor.BOLD, ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC,
 								ChatColor.RESET, ChatColor.RESET, ChatColor.RESET, ChatColor.RESET,
 							  };
@@ -942,7 +956,14 @@ public class MCDocsListener implements Listener {
 			Plugin GeoIPTools = this.plugin.getServer().getPluginManager().getPlugin("GeoIPTools");
 			geoIP = ((GeoIPTools) GeoIPTools).getGeoIPLookup();
 			
-			String country = geoIP.getCountry(player.getAddress().getAddress()).getName();
+			String country = "";
+			
+			try{
+				country = geoIP.getCountry(player.getAddress().getAddress()).getName();
+			}
+			catch(Exception e){
+				logit("GeoIPTools has thrown an exception. Perhaps update it?");
+			}
 			if(country == "N/A"){
 				country = "Unknown"; 
 			}
