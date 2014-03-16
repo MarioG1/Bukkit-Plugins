@@ -1004,7 +1004,6 @@ public class MCDocsUtil implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
-		long start = System.currentTimeMillis();
                 final Player player = event.getPlayer();
 		if(motdEnabled){
                     Bukkit.getScheduler().runTaskAsynchronously(this.plugin, new Runnable() {
@@ -1040,10 +1039,8 @@ public class MCDocsUtil implements Listener {
 			
 			message = basicVariableSwap(player, message);
 			message = colourSwap(message);
-			event.setJoinMessage(null);
+			event.setJoinMessage(message);
 		}
-                long stop = System.currentTimeMillis();
-                logit("Execution time: "+ (stop-start)+ "ms");
 	}
 	
 	@EventHandler	

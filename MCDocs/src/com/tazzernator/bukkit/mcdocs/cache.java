@@ -9,8 +9,6 @@ package com.tazzernator.bukkit.mcdocs;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.tazzernator.bukkit.mcdocs.MCDocsUtil.log;
-import java.util.logging.Level;
 
 /**
  *
@@ -31,7 +29,6 @@ public class cache {
     public ArrayList<String> get(String file){
         
         ArrayList<String> list = this.cachedfiles.get(file);        
-        log.log(Level.INFO, "[MCDocs] Cache read: {0}", file);
         return (ArrayList<String>) list.clone();        
     }
 
@@ -41,7 +38,6 @@ public class cache {
     */
     public void add(String file, ArrayList<String> content){
         if(file != null && content !=null){
-            log.log(Level.INFO, "[MCDocs] Cache write: {0}", file);
             this.cachedfiles.put(file, content);
         }
     }
