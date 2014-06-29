@@ -117,7 +117,7 @@ public class MCDocs extends JavaPlugin {
 			try{
 				if(args[0].equalsIgnoreCase("-reload")){
 					if(player == null){
-						this.playerListener.loadConfig();
+						this.playerListener.loadConfig();                               
 						this.playerListener.logit("MCDocs has been reloaded through console");
 						return true;
 					}

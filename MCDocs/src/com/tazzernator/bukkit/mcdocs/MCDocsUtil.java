@@ -213,6 +213,7 @@ public class MCDocsUtil implements Listener {
 	public void loadConfig(){
 		commandsList.clear();
 		motdList.clear();
+                cache.clear();
 		
 		String folderName = plugin.getDataFolder().getParent();
 				
